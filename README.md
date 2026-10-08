@@ -4,7 +4,7 @@ Kursinio darbo I dalis: projektavimo dokumentas
 
 ## 1. Problema ir idėja
 
-**Sistema vienu sakiniu:** [Sistema skirta mokiniams, mokytojams, kad būtų galima vienoje vietoje valdyti pažymius, namų darbus, atsiskaitymus ir pasinaudoti DI asistentu mokymosi planavimui.]
+**Sistema vienu sakiniu:** [Sistema skirta mokiniams ir mokytojams, kad būtų galima vienoje vietoje valdyti pažymius, namų darbus, atsiskaitymus ir pasinaudoti DI asistentu mokymosi planavimui.]
 
 **Problema ir dabartinis procesas:** [Mokiniui informacija apie mokymąsi dažnai yra išskaidyta: pažymiai, namų darbai ir atsiskaitymai pateikiami skirtingose sistemos vietose. Dėl to gali būti sunku greitai suprasti, ką reikia atlikti ir kam reikėtų skirti daugiau dėmesio. Įprastas el. dienynas daugiausia pateikia informaciją, tačiau nepadeda jos interpretuoti ir sudaryti individualaus mokymosi plano.]
 
@@ -17,7 +17,7 @@ Mokytojas - gali įvesti pažymius, sukurti namų darbus su atlikimo terminu ir 
 Naudotojai bus sukurti iš anksto.
 Naudotojai turės paskyras ir galės prisijungti prie sistemos.
 Mokymosi informacija bus saugoma duomenų bazėje.
-DI asistentas turės apdoroti paduodamą informaciją, kad duoti atsakymą.]
+DI asistentas turės apdoroti pateikiamą informaciją ir pagal ją pateikti atsakymą.]
 
 ## 2. Apimtis
 
@@ -36,44 +36,108 @@ DI asistentas turės apdoroti paduodamą informaciją, kad duoti atsakymą.]
 
 **DI mokymosi asistentas:** [Modulis skirtas padėti mokiniui suprasti, ką jam reikėtų atlikti ir kaip planuoti mokymąsi. Asistentas analizuos sistemoje esančius mokinio duomenis, tokius kaip namų darbai, artėjantys atsiskaitymai ir pažymiai, ir pagal juos pateiks atsakymą.]
 
-**Logika, kurią reikės projektuoti ir testuoti:** [Pagrindinė logika bus atsakinga už naudotojo klausimo apdorojimą, tinkamų duomenų iš dienyno parinkimą, konteksto paruošimą DI modeliui, DI atsakymo gavimą]
+**Logika, kurią reikės projektuoti ir testuoti:** [Pagrindinė logika bus atsakinga už naudotojo klausimo apdorojimą, tinkamų duomenų iš dienyno parinkimą, prioritetų nustatymą, konteksto paruošimą DI modeliui, DI atsakymo gavimą ir gauto atsakymo tinkamumo patikrinimą.]
 
 **Įvestis:** [Naudotojo klausimas ir su juo susiję dienyno duomenys, pvz.: „Ką man reikėtų šiandien pasimokyti?“, sistemoje tuo metu yra nurodytas matematikos kontrolinis už dienos, matematikos vidurkis 6, anglų kalbos namų darbai turi būti paruošti iki rytojaus]
 
-**Išvestis:** [DI asistento atsakymas su prioritetine mokymosi rekomendacija, pvz.: „Šiandien pirmiausia rekomenduočiau skirti apie 30 minučių matematikai, nes rytoj laukia kontrolinis. Po to užbaik anglų kalbos namų darbus.“]
+**Išvestis:** [DI asistento atsakymas su prioritetine mokymosi rekomendacija, pvz.: „Šiandien pirmiausia rekomenduočiau skirti laiką matematikai, nes rytoj laukia kontrolinis. Po to užbaik anglų kalbos namų darbus.“]
 
-**Veikimo eiga:** [1. Mokinys prisijungia prie sistemos.
+**Veikimo eiga:** [
+
+1. Mokinys prisijungia prie sistemos.
 2. Mokinys pateikia klausimą DI asistentui.
 3. Sistema nustato prisijungusio mokinio ID.
 4. Iš duomenų bazės gaunami su klausimu susiję mokinio duomenys.
-5. Sistema suformuoja užklausą DI modeliui.
-6. DI modelis sugeneruoja atsakymą.
-7. Sistema pateikia sugeneruotą atsakymą mokiniui.
-8. Jei DI paslauga nepasiekiama, naudotojui pateikiamas informacinis pranešimas.]
+5. Sistema pagal nustatytas taisykles atrenka aktualius duomenis ir nustato jų prioritetą.
+6. Sistema suformuoja užklausą DI modeliui.
+7. DI modelis sugeneruoja atsakymą.
+8. Sistema patikrina, ar atsakymas gautas ir ar jis atitinka nustatytus tinkamumo kriterijus.
+9. Jei atsakymas tinkamas, jis pateikiamas mokiniui.
+10. Jei atsakymas negautas arba netinkamas, mokiniui pateikiamas informacinis pranešimas ir leidžiama užklausą pakartoti.]
 
 ### Taisyklės arba sprendimo žingsniai
 
 1. [DI asistentas gali naudoti tik prie prisijungusio mokinio paskyros susietus duomenis.]
-2. [Artėjantys atsiskaitymai turi didesnį prioritetą nei užduotys, kurių terminas yra vėlesnis.]
-3. [Jei DI modelis nepasiekiamas, sistema neturi nutrūkti - naudotojui turi būti parodytas suprantamas klaidos pranešimas.]
-4. [DI atsakymas turi būti pateikiamas kaip rekomendacija, o ne kaip garantuotas mokymosi rezultatas.]
-5. [Sistema neturi leisti DI asistentui keisti pažymių ar kitų dienyno duomenų.]
+2. [Artimiausiam atsiskaitymui ar namų darbui suteikiamas didesnis prioritetas už vėliau vyksiantį atsiskaitymą ar vėlesnį namų darbo terminą.]
+3. [Jei tą pačią dieną yra keli atsiskaitymai ir (ar) namų darbai, rekomendacijoje turi būti atsižvelgiama į visus tos dienos darbus ir siūloma tinkamai paskirstyti jiems skirtą laiką.]
+4. [Jei artėjančių atsiskaitymų nėra, rekomendacija formuojama pagal artimiausius namų darbų terminus.]
+5. [Jei nėra pakankamai dienyno duomenų atsakymui suformuoti, sistema turi aiškiai apie tai informuoti mokinį.]
+6. [DI atsakymas turi būti paremtas į DI užklausą perduotu mokinio kontekstu.]
+7. [Jei DI paslauga nepasiekiama arba atsakymas negaunamas, sistema turi pateikti suprantamą klaidos pranešimą ir leisti užklausą pakartoti.]
+8. [Sistema neturi leisti DI asistentui keisti pažymių ar kitų dienyno duomenų.]
+
+### DI atsakymo tinkamumo vertinimas
+
+[DI atsakymas laikomas tinkamu, jeigu:
+
+1. Atsakymas yra gautas ir nėra tuščias
+2. Atsakymas yra susijęs su mokinio pateiktu klausimu
+3. Atsakymas remiasi į DI užklausą perduotais dienyno duomenimis
+4. Atsakyme nepateikiami kontekste nesantys mokinio dienyno faktai
+5. Atsakymas atsižvelgia į nustatytas prioritetų taisykles.]
+
+[Vertinant atsakymą naudojami trys rezultatai:
+
+Tinkamas: atsakymas atitinka mokinio klausimą, remiasi pateiktais duomenimis ir nepažeidžia nustatytų taisyklių.
+Netinkamas: atsakymas neatitinka pateiktų duomenų, ignoruoja svarbią informaciją arba pateikia išgalvotus faktus.
+Negautas: DI paslauga neatsako arba grąžina klaidą. Tokiu atveju mokiniui parodomas informacinis pranešimas ir nepateikiamas išgalvotas atsakymas.]
+
+[Jeigu atsakymas neatitinka nustatytų tinkamumo kriterijų, jis nelaikomas tinkamu ir mokiniui nepateikiamas kaip galutinis atsakymas. Sistema parodo informacinį pranešimą ir leidžia užklausą pakartoti.]
 
 ### Scenarijai būsimiems testams
 
-| Scenarijus                        | Pradinės sąlygos ir konkreti įvestis                          | Veiksmas                                    | Tikslus laukiamas rezultatas                                                                                     |
-| --------------------------------- | ------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Įprastas atvejis                  | [Mokinys turi kontrolinį rytoj ir kelias namų darbų užduotis] | [Įveda „Ką man šiandien reikėtų padaryti?“] | [Sistema pateikia rekomendaciją, kurioje pirmenybė teikiama artėjančiam kontroliniam ir artimiausiems terminams] |
-| Ribinis atvejis arba konfliktas   | [Du atsiskaitymai vyksta tą pačią dieną]                      | [Įveda „Kam skirti daugiau laiko?“]         | [Sistema pateikia DI atsakymą, kuriame atsižvelgiama į abu atsiskaitymus.]                                       |
-| Klaida arba neįmanomas rezultatas | [DI paslauga nepasiekiama]                                    | [Mokinys pateikia klausimą]                 | [Sistema pateikia klaidos pranešimą ir nesugeneruoja melagingo atsakymo]                                         |
+| Scenarijus                        | Pradinės sąlygos ir konkreti įvestis                                          | Veiksmas                                    | Tikslus laukiamas rezultatas                                                                                                                                                                                         |
+| --------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Įprastas atvejis                  | [Mokinys turi kontrolinį rytoj ir kelias namų darbų užduotis]                 | [Įveda „Ką man šiandien reikėtų padaryti?“] | [Sistema pateikia rekomendaciją, kurioje pirmenybė teikiama artėjančiam kontroliniam ir artimiausiems terminams]                                                                                                     |
+| Ribinis atvejis arba konfliktas   | [Du atsiskaitymai vyksta tą pačią dieną]                                      | [Įveda „Kam skirti daugiau laiko?“]         | [Jeigu keli atsiskaitymai vyksta tą pačią dieną, sistema nelaiko vieno iš jų automatiškai svarbesniu. DI rekomendacijoje turi būti paminėti abu atsiskaitymai ir rekomenduojama paskirstyti mokymosi laiką tarp jų.] |
+| Klaida arba neįmanomas rezultatas | [DI paslauga nepasiekiama]                                                    | [Mokinys pateikia klausimą]                 | [Sistema pateikia klaidos pranešimą ir nesugeneruoja melagingo atsakymo]                                                                                                                                             |
+| Netinkamas atsakymas              | [DI atsakyme nurodomas testiniuose duomenyse nesantis atsiskaitymas]          | [Sistema gauna DI atsakymą]                 | [Atsakymas laikomas netinkamu ir mokiniui nepateikiamas kaip galutinis atsakymas, atvaizduojamas klaidos pranešimas]                                                                                                 |
+| Nėra atsiskaitymų                 | [Artėjančių atsiskaitymų nėra, tačiau yra namų darbas su artimiausiu terminu] | [Klausia, ką atlikti pirmiausia]            | [Atsakyme pirmenybė teikiama artimiausiam namų darbo terminui]                                                                                                                                                       |
+| Nėra atsiskaitymų ir namų darbų   | [Nėra artėjančių atsiskaitymų ir namų darbų]                                  | [Klausia, kokius darbus reikia atlikti]     | [Atsakyme pranešama apie tai, kad artėjančių darbų nėra]                                                                                                                                                             |
 
-**Jei modulis naudoja AI:** [DI užklausai bus pateikiamas aiškiai suformuotas kontekstas: naudotojo klausimas, aktualūs namų darbai, atsiskaitymai ir kiti reikalingi duomenys.
+[DI užklausai bus pateikiamas aiškiai suformuotas kontekstas: naudotojo klausimas, aktualūs namų darbai, atsiskaitymai ir kiti reikalingi duomenys.
 
 Testavimui bus naudojami iš anksto paruošti scenarijai su žinomais duomenimis. Bus tikrinama, ar naudotojo užklausa tinkamai perduodama DI modeliui, ar gaunamas atsakymas ir ar atsakyme naudojami konkretaus naudotojo pateikti bei sistemoje esantys duomenys. Taip pat bus tikrinama, ar vienas naudotojas negali gauti kito mokinio informacijos.
 
-DI atsakymo kokybės matavimas nebus taikomas.
-
 Jeigu DI paslauga nepasiekiama arba negaunamas atsakymas, sistema turi informuoti naudotoją apie laikiną DI asistento nepasiekiamumą.]
+
+### Pavyzdiniai DI testavimo duomenys
+
+| Duomenys                         | Reikšmė      |
+| -------------------------------- | ------------ |
+| [Matematikos kontrolinis darbas] | [2026-10-09] |
+| [Anglų kalbos namų darbas]       | [2026-10-10] |
+| [Istorijos kontrolinis darbas]   | [2026-10-15] |
+
+[Mokinio klausimas: „Ką man šiandien pirmiausia reikėtų atlikti?“]
+
+[Pagal nustatytas taisykles tikimasi, kad atsakyme pirmenybė bus teikiama artimiausiam matematikos kontroliniam, o vėliau bus paminėtas anglų kalbos namų darbas.]
+
+| Duomenys                       | Reikšmė      |
+| ------------------------------ | ------------ |
+| [Anglų kalbos namų darbas]     | [2026-10-10] |
+| [Istorijos kontrolinis darbas] | [2026-10-12] |
+
+[Mokinio klausimas: „Ką turėčiau daryti šiandien?“]
+
+[Pagal nustatytas taisykles tikimasi, kad atsakyme pirmenybė bus teikiama artimiausiam anglų kalbos namų darbui, o vėliau bus paminėtas istorijos kontrolinis darbas.]
+
+| Duomenys | Reikšmė |
+| -------- | ------- |
+|          |         |
+
+[Mokinio klausimas: „Ką turėčiau atlikti?“]
+
+[Pagal nustatytas taisykles tikimasi, kad atsakyme bus pasakyta, kad nėra artėjančių darbų.]
+
+| Duomenys                          | Reikšmė      |
+| --------------------------------- | ------------ |
+| [Anglų kalbos kontrolinis darbas] | [2026-10-12] |
+| [Istorijos kontrolinis darbas]    | [2026-10-12] |
+
+[Mokinio klausimas: „Kam turėčiau pasiruošti artimiausiu metu?“]
+
+[Pagal nustatytas taisykles tikimasi, kad atsakyme bus paminėti visi kontroliniai darbai, vykstantis tą pačią dieną ir siūloma paskirstyti laiką tarp jų.]
 
 ## 4. Kokybės atributas
 
@@ -83,7 +147,7 @@ Jeigu DI paslauga nepasiekiama arba negaunamas atsakymas, sistema turi informuot
 
 **Tikrinimo scenarijus ir sąlygos:** [Bus pasirinktos pagrindinės naudotojo užduotys: prisijungti prie sistemos, rasti artėjantį atsiskaitymą, peržiūrėti namų darbus ir pateikti klausimą DI asistentui. Užduotis atliks keli testuotojai, kurie nėra kūrę sistemos.]
 
-**Sėkmės kriterijus:** [Didžioji dalis testuotojų turi savarankiškai atlikti visas pagrindines užduotis be papildomo paaiškinimo.]
+**Sėkmės kriterijus:** [Bent 3 iš 4 testuotojų turi savarankiškai atlikti visas pagrindines užduotis be papildomo paaiškinimo.]
 
 **Numatytas projektavimo sprendimas:** [Bus naudojama paprasta ir nuosekli vartotojo sąsaja. Pagrindinės funkcijos bus pasiekiamos iš pagrindinio meniu, o svarbiausia informacija - artėjantys atsiskaitymai ir namų darbai - bus rodoma pagrindiniame puslapyje.]
 
