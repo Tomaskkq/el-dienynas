@@ -4,7 +4,7 @@ Kursinio darbo I dalis: projektavimo dokumentas
 
 ## 1. Problema ir idėja
 
-**Sistema vienu sakiniu:** [Sistema skirta mokiniams ir mokytojams, kad būtų galima vienoje vietoje valdyti pažymius, namų darbus, atsiskaitymus ir pasinaudoti DI asistentu mokymosi planavimui.]
+**Sistema vienu sakiniu:** [Sistema skirta mokiniams, mokytojams, kad būtų galima vienoje vietoje valdyti pažymius, namų darbus, atsiskaitymus ir pasinaudoti DI asistentu mokymosi planavimui.]
 
 **Problema ir dabartinis procesas:** [Mokiniui informacija apie mokymąsi dažnai yra išskaidyta: pažymiai, namų darbai ir atsiskaitymai pateikiami skirtingose sistemos vietose. Dėl to gali būti sunku greitai suprasti, ką reikia atlikti ir kam reikėtų skirti daugiau dėmesio. Įprastas el. dienynas daugiausia pateikia informaciją, tačiau nepadeda jos interpretuoti ir sudaryti individualaus mokymosi plano.]
 
@@ -51,7 +51,7 @@ DI asistentas turės apdoroti pateikiamą informaciją ir pagal ją pateikti ats
 5. Sistema pagal nustatytas taisykles atrenka aktualius duomenis ir nustato jų prioritetą.
 6. Sistema suformuoja užklausą DI modeliui.
 7. DI modelis sugeneruoja atsakymą.
-8. Sistema patikrina, ar atsakymas gautas ir ar jis atitinka nustatytus tinkamumo kriterijus.
+8. Sistema patikrina, ar atsakymas gautas ir ar jis atitinka nustatytus tinkamumo kriterijus, ar yra laikomasi nustatytų taisyklių.
 9. Jei atsakymas tinkamas, jis pateikiamas mokiniui.
 10. Jei atsakymas negautas arba netinkamas, mokiniui pateikiamas informacinis pranešimas ir leidžiama užklausą pakartoti.]
 
@@ -74,7 +74,8 @@ DI asistentas turės apdoroti pateikiamą informaciją ir pagal ją pateikti ats
 2. Atsakymas yra susijęs su mokinio pateiktu klausimu
 3. Atsakymas remiasi į DI užklausą perduotais dienyno duomenimis
 4. Atsakyme nepateikiami kontekste nesantys mokinio dienyno faktai
-5. Atsakymas atsižvelgia į nustatytas prioritetų taisykles.]
+5. Atsakymas atsižvelgia į nustatytas prioritetų taisykles
+6. Sistema palygina DI atsakymą su perduotais dienyno duomenimis. Patikrinama, ar atsakyme nurodyti darbai ir jų terminai yra teisingi bei ar laikomasi nustatytų prioritetų. Jei randama neatitikimų, atsakymas laikomas netinkamu.]
 
 [Vertinant atsakymą naudojami trys rezultatai:
 
@@ -102,6 +103,8 @@ Testavimui bus naudojami iš anksto paruošti scenarijai su žinomais duomenimis
 Jeigu DI paslauga nepasiekiama arba negaunamas atsakymas, sistema turi informuoti naudotoją apie laikiną DI asistento nepasiekiamumą.]
 
 ### Pavyzdiniai DI testavimo duomenys
+
+[Visuose testuose „šiandien“ data laikoma 2026-10-08. Darbų prioritetai nustatomi pagal jų terminus, lyginant su šia data.]
 
 | Duomenys                         | Reikšmė      |
 | -------------------------------- | ------------ |
@@ -208,12 +211,12 @@ GitHub - programinio kodo versijavimui ir projekto saugojimui. Pasirinktas todė
 
 ### AI rengiant šį dokumentą
 
-| Priemonė ir užduotis                           | Ką panaudojau                                         | Ką atmečiau arba perrašiau ir kodėl                                                                      | Kaip patikrinau                                                                      |
-| ---------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [ChatGPT – projekto funkcijų planavimas]       | [Pasiūlymus dėl sistemos modulių ir funkcijų]         | [Atmestos per sudėtingos funkcijos, pavyzdžiui, pažangos analizė, nes projekto apimtis būtų per didelė]  | [Įvertinau, ar funkcijos realiai įgyvendinamos per numatytą projekto laiką]          |
-| [ChatGPT – dokumento tekstų rengimas]          | [Pasiūlytas formuluotes ir tekstų struktūrą]          | [Kai kurios formuluotės buvo supaprastintos arba perrašytos, kad atitiktų projekto sprendimus ir apimtį] | [Palyginau su savo projekto sprendimais ir pakoregavau tekstą]                       |
-| [ChatGPT – technologijų pasirinkimo aprašymas] | [Technologijų aprašymus ir jų pasirinkimo priežastis] | [Per daug techninės arba nereikalingos informacijos buvo atsisakyta]                                     | [Patikrinau, ar pasirinktos technologijos atitinka planuojamą sistemos architektūrą] |
-| [ChatGPT – DI funkcionalumo planavimas]        | [DI asistento veikimo ir testavimo idėjas]            | [Atsisakyta DI atsakymų kokybės matavimo, nes tai nėra pagrindinis projekto tikslas]                     | [Patikrinau, ar pasirinktas testavimas yra realiai įgyvendinamas projekto metu]      |
+| Priemonė ir užduotis                           | Ką panaudojau                                         | Ką atmečiau arba perrašiau ir kodėl                                                                      | Kaip patikrinau                                                                                                                                                                                                                              |
+| ---------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ChatGPT – projekto funkcijų planavimas]       | [Pasiūlymus dėl sistemos modulių ir funkcijų]         | [Atmestos per sudėtingos funkcijos, pavyzdžiui, pažangos analizė, nes projekto apimtis būtų per didelė]  | [Įvertinau, ar funkcijos realiai įgyvendinamos per numatytą projekto laiką]                                                                                                                                                                  |
+| [ChatGPT – dokumento tekstų rengimas]          | [Pasiūlytas formuluotes ir tekstų struktūrą]          | [Kai kurios formuluotės buvo supaprastintos arba perrašytos, kad atitiktų projekto sprendimus ir apimtį] | [Palyginau su savo projekto sprendimais ir pakoregavau tekstą]                                                                                                                                                                               |
+| [ChatGPT – technologijų pasirinkimo aprašymas] | [Technologijų aprašymus ir jų pasirinkimo priežastis] | [Per daug techninės arba nereikalingos informacijos buvo atsisakyta]                                     | [Patikrinau, ar pasirinktos technologijos atitinka planuojamą sistemos architektūrą]                                                                                                                                                         |
+| [ChatGPT – DI funkcionalumo planavimas]        | [DI asistento veikimo ir testavimo idėjas]            | [Atsisakyta sudėtingo DI atsakymų kokybės vertinimo, nes projekto apimtis tam per didelė]                | [Atsisakyta sudėtingo DI atsakymų kokybės vertinimo, tačiau bus tikrinama, ar atsakymai teisingai remiasi dienyno duomenimis, nurodo terminus ir laikosi prioritetų. Tai bus atliekama naudojant 3 skyriuje aprašytus testavimo scenarijus.] |
 
 ### Planuojamas AI naudojimas kuriant sistemą
 
@@ -228,10 +231,10 @@ GitHub - programinio kodo versijavimui ir projekto saugojimui. Pasirinktas todė
 | Darbas                                 | Apčiuopiamas rezultatas                                                             | Planuojama darbų seka |
 | -------------------------------------- | ----------------------------------------------------------------------------------- | --------------------- |
 | [Projekto sukūrimas]                   | [Veikiantis Spring Boot projektas]                                                  | [1]                   |
-| [Duomenų bazės projektavimas]          | [PostgreSQL lentelės naudotojams, dalykams, pažymiams, užduotims ir atsiskaitymams] | [2]                   |
-| [Autentifikacija]                      | [Veikiantis mokinio ir mokytojo prisijungimas]                                      | [3]                   |
-| [Dienyno funkcijos]                    | [Pažymių, namų darbų ir atsiskaitymų peržiūra]                                      | [4]                   |
-| [DI asistento prototipas]              | [Java aplikacija, galinti siųsti užklausas DI modeliui ir rodyti atsakymą]          | [5]                   |
+| [DI asistento prototipas]              | [Java aplikacija, galinti siųsti užklausas DI modeliui ir rodyti atsakymą]          | [2]                   |
+| [Duomenų bazės projektavimas]          | [PostgreSQL lentelės naudotojams, dalykams, pažymiams, užduotims ir atsiskaitymams] | [3]                   |
+| [Autentifikacija]                      | [Veikiantis mokinio ir mokytojo prisijungimas]                                      | [4]                   |
+| [Dienyno funkcijos]                    | [Pažymių, namų darbų ir atsiskaitymų peržiūra]                                      | [5]                   |
 | [DI integracija su dienyno duomenimis] | [Asistentas gali atsakyti pagal konkretaus mokinio informaciją]                     | [6]                   |
 | [Testavimas]                           | [Rankinio testavimo scenarijų rinkinys]                                             | [7]                   |
 | [Vartotojo sąsajos patobulinimas]      | [Patogus pagrindinis puslapis ir DI asistento langas]                               | [8]                   |
