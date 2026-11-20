@@ -74,7 +74,7 @@ public class OllamaService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(OLLAMA_URL))
                 .header("Content-Type", "application/json")
-                .timeout(Duration.ofSeconds(60))
+                .timeout(Duration.ofSeconds(120))
                 .POST(HttpRequest.BodyPublishers.ofString(
                         mapper.writeValueAsString(requestBody)
                 ))

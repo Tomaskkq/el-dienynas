@@ -102,6 +102,36 @@ Testavimui bus naudojami iš anksto paruošti scenarijai su žinomais duomenimis
 
 Jeigu DI paslauga nepasiekiama arba negaunamas atsakymas, sistema turi informuoti naudotoją apie laikiną DI asistento nepasiekiamumą.]
 
+
+### Sistema ne tik pateikia DI sugeneruotą atsakymą, bet ir patikrina, ar jame paminėti darbai atitinka mokinio dienyno duomenis.
+
+[DI atsakyme pateikiamas consideredTasks sąrašas, kuriame kiekvienas paminėtas darbas turi:
+
+type – darbo tipą (egzaminas arba namų darbas);
+id – konkretaus darbo ID dienyne;
+subject – mokomąjį dalyką;
+date – darbo datą.
+
+Pagal šiuos duomenis AIResponseValidator klasė susieja DI atsakyme paminėtą darbą su konkrečiu dienyno įrašu ir patikrina, ar nurodyti duomenys teisingi.
+
+### Pavyzdys: neteisingai nurodyta kontrolinio darbo data
+
+Tarkime, mokinio dienyne yra įrašytas matematikos kontrolinis darbas:
+ID: 1
+Dalykas: Matematika
+Data: 2026-11-18
+
+DI atsakyme pateikiama (naudotojas šito nemato):
+{
+"type": "exam",
+"id": 1,
+"subject": "Matematika",
+"date": "2026-10-12"
+}
+
+Sistema pagal darbo ID 1 suranda atitinkamą kontrolinį darbą dienyne ir palygina jo datą su DI atsakyme pateikta data.
+
+Kadangi dienyne nurodyta data 2026-11-18, o DI atsakyme – 2026-10-12, sistema aptinka neatitikimą ir atmeta neteisingą DI atsakymą.]
 ### Pavyzdiniai DI testavimo duomenys
 
 [Visuose testuose „šiandien“ data laikoma 2026-10-08. Darbų prioritetai nustatomi pagal jų terminus, lyginant su šia data.]
@@ -251,6 +281,45 @@ DI asistentas pateiks mokiniui suprantamą rekomendaciją, paremtą pateiktais d
 | [DI gali pateikti išgalvotą informaciją]                      | [DI užklausose pateiksiu aiškų kontekstą ir testuosiu su iš anksto žinomais duomenimis]                          |
 | [DI gali neteisingai interpretuoti mokinio duomenis]          | [Naudosiu konkrečius testinius scenarijus ir tikrinsiu atsakymus]                                                |
 | [Naudotojo duomenys gali būti pasiekiami netinkamam asmeniui] | [Įgyvendinsiu autentifikaciją ir tikrinsiu, kad backend užklausos grąžintų tik prisijungusio naudotojo duomenis] |
+
+## AI modelio pasirinkimas
+
+[Projektas naudoja Ollama, todėl naudotojas gali pats pasirinkti, kokį AI modelį naudoti.
+
+Įdiegti Ollama (ollama.com/download).
+
+Atsidaryti CMD arba terminalą.
+
+Atsisiųsti norimą modelį komanda: ollama pull qwen3:8b
+(vietoje "qwen3:8b" norimas modelis, silpnesni modeliai gali blogai laikytis taisyklių, rekomenduojamas modelis: qwen3:8b)
+
+Atidaryti OllamaService.java failą.
+
+Rasti modelio pavadinimo nustatymą "MODEL"
+
+Pakeisti qwen3:8b į norimo ir Ollama įdiegto modelio pavadinimą.
+
+Pavyzdžiui: MODEL = "qwen3:8b"
+
+Galima naudoti bet kurį su Ollama suderinamą ir kompiuteryje įdiegtą modelį.]
+
+## Projekto paleidimas per IntelliJ IDEA
+
+[Atidaryti projektą IntelliJ IDEA aplinkoje.
+
+Įsitikinti, kad įdiegtas Java JDK (openjdk-25) ir Maven priklausomybės yra įkeltos.
+
+Įsitikinti, kad atsisiųstas AI modelis.
+
+Atidaryti src/main/java/com/el_dienynas/Main.java.
+
+Paleisti klasę Main paspaudus Run.]
+
+## Testavimas
+
+[Atidaryti src/test/java/com/el_dienynas/AIResponseValidatorTest.java.
+
+Paspausti Run 'AIResponseValidatorTest'.]
 
 ## Šaltiniai
 
